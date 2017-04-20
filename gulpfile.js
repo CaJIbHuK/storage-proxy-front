@@ -42,7 +42,7 @@ gulp.task('vendor', ['clean'], function () {
   //==========BUILDING RXJS BUNDLE===========//
   const Builder = require("systemjs-builder");
 
-  var options = {
+  let builderOptions = {
     normalize: true,
     runtime: false,
     sourceMaps: true,
@@ -50,7 +50,7 @@ gulp.task('vendor', ['clean'], function () {
     minify: false,
     mangle: false
   };
-  var builder = new Builder('./');
+  let builder = new Builder('./');
   builder.config({
     paths: {
       "n:*": "node_modules/*",
@@ -64,10 +64,10 @@ gulp.task('vendor', ['clean'], function () {
     }
   });
 
-  builder.bundle('rxjs', 'dist/vendor/rxjs/Rx.js', options);
+  builder.bundle('rxjs', 'dist/vendor/rxjs/Rx.js', builderOptions);
 
   //==========COPY VENDOR BUNDLES===========//
-  var files = [
+  let files = [
     // Using: <source file>, <plugin destination folder>, <file target name>
 
     // The very important stuff
@@ -101,6 +101,9 @@ gulp.task('vendor', ['clean'], function () {
     [`node_modules/@angular/http/bundles/http.umd.js`, `vendor/@angular/`],
     [`node_modules/@angular/http/bundles/http.umd.min.js`, `vendor/@angular/`],
 
+    [`node_modules/@angular/router/bundles/router.umd.js`, `vendor/@angular/`],
+    [`node_modules/@angular/router/bundles/router.umd.min.js`, `vendor/@angular/`],
+
     [`node_modules/@angular/platform-browser/bundles/platform-browser.umd.js`, `vendor/@angular/`],
     [`node_modules/@angular/platform-browser/bundles/platform-browser.umd.min.js`, `vendor/@angular/`],
 
@@ -114,7 +117,7 @@ gulp.task('vendor', ['clean'], function () {
 
     [`node_modules/ng2-translate/bundles/ng2-translate.umd.js`, `vendor/ng2-translate/`],
   ];
-  var options = {cwd : dist, overwrite : true};
+  let options = {cwd : dist, overwrite : true};
 
   return merge(files.map(function (f) {
     return gulp.src(f[0])

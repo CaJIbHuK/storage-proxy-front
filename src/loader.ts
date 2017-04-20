@@ -9,8 +9,7 @@
   //   [`node_modules/reflect-metadata/Reflect.js`, `vendor/reflect-metadata/`],
   //   [`node_modules/rxjs/bundles/Rx.min.js`, `vendor/rxjs/`],
 
-  var map = {
-    'app' : 'app',
+  let map = {
     '@angular' : 'vendor/@angular',
     '@angular/platform-browser-dynamic' : 'vendor/@angular/platform-browser-dynamic.umd.js',
     '@angular/platform-browser' : 'vendor/@angular/platform-browser.umd.js',
@@ -19,11 +18,14 @@
     '@angular/compiler' : 'vendor/@angular/compiler.umd.js',
     '@angular/forms' : 'vendor/@angular/forms.umd.js',
     '@angular/http' : 'vendor/@angular/http.umd.js',
+    '@angular/router' : 'vendor/@angular/router.umd.js',
     '@angular/upgrade' : 'vendor/@angular/upgrade.umd.js',
     'zone.js/dist/*' : 'vendor/zone.js/*',
     'systemjs/dist/*' : 'vendor/systemjs/*',
     'core-js/client/*' : 'vendor/core-js/*',
 
+    'app/*' : 'app/*',
+    'auth/*' : 'auth/*',
     // 'rxjs' : 'vendor/rxjs',
     // 'rxjs/Observable' : 'vendor/rxjs/Rx.min',
     // 'rxjs/observable/merge' : 'vendor/rxjs/Rx.min',
@@ -31,12 +33,13 @@
     // 'rxjs/Subject' : 'vendor/rxjs/Rx.min',
   };
   // packages tells the System loader how to load when no filename and/or no extension
-  var packages = {
+  let packages = {
     'app' : {main : 'main.js', defaultExtension : 'js'},
+    'auth' : {defaultExtension : 'js'}
     // 'rxjs' : {defaultExtension : 'js'},
   };
 
-  // var ngPackageNames = [
+  // let ngPackageNames = [
   //   'common',
   //   'compiler',
   //   'core',
@@ -59,10 +62,10 @@
   // }
   //
   // // Most environments should use UMD; some (Karma) need the individual index files
-  // var setPackageConfig = System.packageWithIndex ? packIndex : packUmd;
+  // let setPackageConfig = System.packageWithIndex ? packIndex : packUmd;
   // // Add package entries for angular packages
   // ngPackageNames.forEach(setPackageConfig);
-  var config = {
+  let config = {
     map : map,
     packages : packages,
   };
