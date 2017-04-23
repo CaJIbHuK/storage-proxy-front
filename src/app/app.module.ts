@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {HttpModule} from "@angular/http";
 import {BrowserModule} from '@angular/platform-browser';
+import NgbModule from "@ng-bootstrap/ng-bootstrap";
 import {AppRoutingModule} from "./app.router";
 import {AppComponent}  from './app.component';
 
@@ -16,6 +17,7 @@ const commonComponents = Object.keys(COMMON_COMPONENTS).map(key => COMMON_COMPON
   imports : [
     BrowserModule,
     HttpModule,
+    NgbModule.NgbModule.forRoot(),
     AuthModule,
     AppRoutingModule
   ],

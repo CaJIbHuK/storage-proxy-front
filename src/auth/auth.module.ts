@@ -1,23 +1,20 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
+import NgbModule from "@ng-bootstrap/ng-bootstrap";
 import {AuthRoutingModule} from "./router";
 
 import * as COMPONENTS from "./components/index";
 const components = Object.keys(COMPONENTS).map(key => COMPONENTS[key]);
 
-import * as SERVICES from "./services/index";
-const services = Object.keys(SERVICES).map(key => SERVICES[key]);
-
-
 @NgModule({
   imports : [
     CommonModule,
     FormsModule,
+    NgbModule.NgbModule,
     AuthRoutingModule
   ],
   providers : [
-    services
   ],
   declarations : [
     components

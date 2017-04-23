@@ -20,12 +20,15 @@
     '@angular/http' : 'vendor/@angular/http.umd.js',
     '@angular/router' : 'vendor/@angular/router.umd.js',
     '@angular/upgrade' : 'vendor/@angular/upgrade.umd.js',
+    '@ng-bootstrap/ng-bootstrap' : 'vendor/@ng-bootstrap/ng-bootstrap.js',
     'zone.js/dist/*' : 'vendor/zone.js/*',
     'systemjs/dist/*' : 'vendor/systemjs/*',
     'core-js/client/*' : 'vendor/core-js/*',
 
     'app/*' : 'app/*',
     'auth/*' : 'auth/*',
+
+    'text' : 'loader/text.js',
     // 'rxjs' : 'vendor/rxjs',
     // 'rxjs/Observable' : 'vendor/rxjs/Rx.min',
     // 'rxjs/observable/merge' : 'vendor/rxjs/Rx.min',
@@ -35,7 +38,7 @@
   // packages tells the System loader how to load when no filename and/or no extension
   let packages = {
     'app' : {main : 'main.js', defaultExtension : 'js'},
-    'auth' : {defaultExtension : 'js'}
+    'auth' : {defaultExtension : 'js'},
     // 'rxjs' : {defaultExtension : 'js'},
   };
 
@@ -70,6 +73,6 @@
     packages : packages,
   };
   // SystemJS.set('rxjs/Rx', System.newModule(window.Rx));
-  SystemJS.config(config);
+  System.config(config);
 
 })(this);

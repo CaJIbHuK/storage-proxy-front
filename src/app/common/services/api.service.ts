@@ -22,6 +22,12 @@ interface RequestParams {
 @Injectable()
 export class HttpClient {
 
+  DEFAULT_HEADERS = {
+    'Content-type' : 'application/json'
+  };
+
+  AUTH_HEADER = "Authorization";
+
   //TODO move to cfg
   //TODO configurable through env
   apiUrl : string = 'http://localhost:3000/api/v1';
@@ -32,18 +38,19 @@ export class HttpClient {
   }
 
   private fillHeaders() {
-    const DEFAULT_HEADERS = {
-      'Content-type' : 'application/json'
-    };
-
     this.headers = new Headers();
-    for (let header of Object.keys(DEFAULT_HEADERS)) {
-      this.headers.append(header, DEFAULT_HEADERS[header])
+    for (let header of Object.keys(this.DEFAULT_HEADERS)) {
+      this.headers.append(header, this.DEFAULT_HEADERS[header])
     }
   }
 
   setAuthHeader(token : string) {
-    this.headers.append('Authorization', `Bearer ${token}`);
+    this.removeAuthHeader();
+    this.headers.append(this.AUTH_HEADER, `Bearer ${token}`);
+  }
+
+  removeAuthHeader() {
+    this.headers.delete(this.AUTH_HEADER);
   }
 
   private getHeaders() {
@@ -76,10 +83,10 @@ export class HttpClient {
       error = errorResponse.text();
     }
     console.error(JSON.stringify(error));
-    throw new Error(error);
+    throw error;
   }
 
-  private makeRequest(params : RequestParams) : Promise<object> {
+  private makeRequest(params : RequestParams) : Promise<any> {
     let defaultOpts = this.getRequestOptions();
     let opts : RequestOptions = Object.assign({}, defaultOpts, {method : params.method});
     if (params.data) opts.body = params.data;
@@ -91,15 +98,15 @@ export class HttpClient {
   }
 
 
-  get(url : string, data? : any) {
+  get<T>(url : string, data? : any) : Promise<T> {
     return this.makeRequest({method : RequestMethod.Get, url : url, data : data || null});
   }
 
-  post(url : string, data : any = {}) {
+  post<T>(url : string, data : any = {}) : Promise<T> {
     return this.makeRequest({method : RequestMethod.Post, url : url, data : data});
   }
 
-  put(url : string, data : any = {}) {
+  put<T>(url : string, data : any = {}) : Promise<T> {
     return this.makeRequest({method : RequestMethod.Put, url : url, data : data});
   }
 
