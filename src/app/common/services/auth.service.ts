@@ -1,4 +1,5 @@
 import {Injectable, Inject} from "@angular/core";
+import {Router} from "@angular/router";
 import {HttpClient} from "./api.service";
 import {UserService} from "./user.service";
 import {AuthInfo, User} from "../models/auth.models";
@@ -14,6 +15,7 @@ export class AuthService {
 
   constructor(@Inject(HttpClient) private http : HttpClient,
               @Inject(UserService) private userService : UserService,
+              @Inject(Router) private router : Router,
   ) {}
 
   getToken() : Promise<string|null> {
@@ -79,7 +81,8 @@ export class AuthService {
   }
 
   signIn(authInfo : AuthInfo) : Promise<{result : boolean, errors? : {message : string}}> {
-    return this.http.post<{token : string}>('auth/signin', authInfo)
+    return this.reset()
+      .then(() => this.http.post<{token : string}>('auth/signin', authInfo))
       .then(result => this.setToken(result.token))
       .then(() => this.init(true))
       .then(() => ({result : this.isAuthenticated()}))
@@ -90,7 +93,8 @@ export class AuthService {
   }
 
   signUp(authInfo : AuthInfo) : Promise<{result : boolean, errors? : {message : string}}> {
-    return this.http.post<{token : string}>('auth/signup', authInfo)
+    return this.reset()
+      .then(() => this.http.post<{token : string}>('auth/signup', authInfo))
       .then(result => this.setToken(result.token))
       .then(() => this.init(true))
       .then(() => ({result : this.isAuthenticated()}))
@@ -98,6 +102,13 @@ export class AuthService {
         this.reset();
         return ({result : false, errors : errors});
       });
+  }
+
+  signOut() : Promise<{result : boolean, errors? : {message : string}}> {
+    return this.reset()
+      .then(() => this.router.navigate(['/signin']))
+      .then(() => ({result : true}))
+      .catch(errors => ({result : false, errors : errors}))
   }
 
 }

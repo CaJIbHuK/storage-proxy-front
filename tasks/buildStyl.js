@@ -8,7 +8,7 @@ module.exports = function ({src, dist}) {
     .pipe(gulpStyl({
       compress : true,
       rawDefine : {
-        'inline-url' : stylus.url({limit : 30000})
+        'inline-url' : stylus.url({limit : false})
       }
     }))
     .pipe(debug({title : 'css/make output:'}))

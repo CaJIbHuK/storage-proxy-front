@@ -10,6 +10,9 @@ import {AuthModule} from "auth/auth.module";
 import  * as COMMON_SERVICES from "./common/services/index";
 const commonServices = Object.keys(COMMON_SERVICES).map(key => COMMON_SERVICES[key]);
 
+import  * as COMMON_GUARDS from "./common/guards/index";
+const commonGuards = Object.keys(COMMON_GUARDS).map(key => COMMON_GUARDS[key]);
+
 import  * as COMMON_COMPONENTS from "./common/components/index";
 const commonComponents = Object.keys(COMMON_COMPONENTS).map(key => COMMON_COMPONENTS[key]);
 
@@ -27,6 +30,7 @@ const commonComponents = Object.keys(COMMON_COMPONENTS).map(key => COMMON_COMPON
   ],
   providers : [
     commonServices,
+    commonGuards
   ],
   bootstrap : [
     AppComponent

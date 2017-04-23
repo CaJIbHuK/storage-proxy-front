@@ -1,4 +1,5 @@
 import {Component, Inject} from "@angular/core";
+import {Router} from "@angular/router";
 import {AuthService} from "app/common/services/index";
 import css from "./signup.component.css!text";
 import commonCss from "../common/auth.component.css!text";
@@ -40,7 +41,9 @@ export class SignUpComponent {
   passwordConfirm : string;
   errors : any = null;
 
-  constructor(@Inject(AuthService) private auth : AuthService) {}
+  constructor(@Inject(AuthService) private auth : AuthService,
+              @Inject(Router) private router : Router,
+  ) {}
 
   onSubmit() {
     if (this.password !== this.passwordConfirm) {
@@ -53,7 +56,8 @@ export class SignUpComponent {
       .then(({result, errors})=> {
         this.loading = false;
         if (result) {
-          alert('signed up!');
+          this.auth.getUser()
+            .then(user => user.storages.google ? this.router.navigate(["/storages"]) : this.router.navigate(["/storages"]));
         }
         else {
           this.errors = errors;
