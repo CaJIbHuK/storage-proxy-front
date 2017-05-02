@@ -1,6 +1,6 @@
 import {Component, Inject} from "@angular/core";
 import {Router} from "@angular/router";
-import {AuthService} from "app/common/services/index";
+import {AuthService, StoragesService} from "app/common/services/index";
 import css from "./signin.component.css!text";
 import commonCss from "../common/auth.component.css!text";
 
@@ -37,7 +37,8 @@ export class SignInComponent {
   };
 
   constructor(@Inject(AuthService) private auth : AuthService,
-              @Inject(Router) private router : Router
+              @Inject(Router) private router : Router,
+              @Inject(StoragesService) private storagesService : StoragesService
   ) {}
 
   onSubmit() {
@@ -47,10 +48,8 @@ export class SignInComponent {
         this.error = false;
         this.loading = false;
         if (result) {
-          this.auth.getUser()
-            .then(user => user.storages.google ? this.router.navigate(["storages"]) : this.router.navigate(["storages"]));
-        }
-        else {
+          this.storagesService.openStorage();
+        } else {
           this.error = true;
         }
       })

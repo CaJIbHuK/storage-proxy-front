@@ -1,6 +1,6 @@
 import {Component, Inject} from "@angular/core";
 import {Router} from "@angular/router";
-import {AuthService} from "app/common/services/index";
+import {AuthService, StoragesService} from "app/common/services/index";
 import css from "./signup.component.css!text";
 import commonCss from "../common/auth.component.css!text";
 
@@ -43,6 +43,7 @@ export class SignUpComponent {
 
   constructor(@Inject(AuthService) private auth : AuthService,
               @Inject(Router) private router : Router,
+              @Inject(StoragesService) private storagesService : StoragesService,
   ) {}
 
   onSubmit() {
@@ -56,8 +57,7 @@ export class SignUpComponent {
       .then(({result, errors})=> {
         this.loading = false;
         if (result) {
-          this.auth.getUser()
-            .then(user => user.storages.google ? this.router.navigate(["/storages"]) : this.router.navigate(["/storages"]));
+          this.storagesService.openStorage();
         }
         else {
           this.errors = errors;

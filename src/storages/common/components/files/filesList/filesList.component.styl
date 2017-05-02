@@ -1,0 +1,31 @@
+:host
+  display flex
+  flex-direction column
+  cursor default
+.files-list
+  display flex
+  flex-direction column
+  hr
+    border-top 1px solid rgba(0, 0, 0, 0.11)
+    width 100%
+  .table-header
+    font-weight 600
+    color #45695d
+    padding 8px
+    margin 0
+  .table-body
+    box-shadow inset 6px 6px 10px -7px rgba(0,0,0,0.4);
+    background white
+    overflow-y auto
+    height 100vh
+    overflow-x hidden
+    .file
+      border-top 1px solid #d6d6d6
+      border-left 1px solid #d6d6d6
+      border-right 1px solid #d6d6d6
+      margin 0
+      padding 8px
+      color rgb(67, 95, 86)
+      &.selected
+        background rgba(110, 144, 111, 0.74)
+        color white

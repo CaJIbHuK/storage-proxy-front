@@ -17,4 +17,7 @@ export class User {
     this.storages = storages || {};
   }
 
+  hasAccessedStorages() {
+    return !!Object.keys(this.storages).find(storage => this.storages[storage]);
+  }
 }

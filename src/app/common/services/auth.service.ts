@@ -57,15 +57,11 @@ export class AuthService {
   refreshUser() : Promise<User> {
     return this.userService.getMe()
       .then(user => user ? this.setUser(user) : Promise.reject(new Error('Bad auth token')))
-      .then(() => this.getUser())
-      .catch(err => {
-        this.reset();
-        throw err;
-      });
+      .then(() => this.getUser());
   }
 
   isAuthenticated() {
-    return !!this.getToken();
+    return this.getToken().then(token => !!token);
   }
 
   init(force = false) {
@@ -76,7 +72,7 @@ export class AuthService {
       .then(() => this.initComplete = true)
       .catch(err => {
         console.error(err);
-        this.reset();
+        return this.reset();
       })
   }
 

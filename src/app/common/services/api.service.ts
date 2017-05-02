@@ -86,20 +86,24 @@ export class HttpClient {
     throw error;
   }
 
-  private makeRequest(params : RequestParams) : Promise<any> {
+  private makeRequest(params : RequestParams, raw : boolean = false) : Promise<any> {
     let defaultOpts = this.getRequestOptions();
     let opts : RequestOptions = Object.assign({}, defaultOpts, {method : params.method});
     if (params.data) opts.body = params.data;
     if (params.options) opts = Object.assign({}, opts, params.options);
 
     return promisify<Response>(this.http.request(`${this.apiUrl}/${params.url}`, opts))
-      .then(response => this.extractData(response))
+      .then(response => raw ? response : this.extractData(response))
       .catch(error => this.handleError(error));
   }
 
 
   get<T>(url : string, data? : any) : Promise<T> {
     return this.makeRequest({method : RequestMethod.Get, url : url, data : data || null});
+  }
+
+  getRaw<T>(url : string, data? : any) : Promise<T> {
+    return this.makeRequest({method : RequestMethod.Get, url : url, data : data || null}, true);
   }
 
   post<T>(url : string, data : any = {}) : Promise<T> {

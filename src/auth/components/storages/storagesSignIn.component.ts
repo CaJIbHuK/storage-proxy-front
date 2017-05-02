@@ -1,5 +1,6 @@
 import {Component, Inject} from "@angular/core";
 import {GoogleStorageService} from "app/common/services/googleStorage.service";
+import {AuthService} from "app/common/services/auth.service";
 import css from "./storagesSignIn.component.css!text";
 import commonCss from "../common/auth.component.css!text";
 
@@ -16,7 +17,15 @@ import commonCss from "../common/auth.component.css!text";
 })
 export class StoragesComponent {
 
-  constructor(@Inject(GoogleStorageService) private google : GoogleStorageService) {}
+  //TODO disable click and show check symbol for already accessed storages
+  storages : {google : boolean};
+
+  constructor(@Inject(AuthService) private authService : AuthService,
+              @Inject(GoogleStorageService) private google : GoogleStorageService,
+  ) {
+    this.authService.getUser()
+      .then(user => this.storages = user.storages)
+  }
 
   googleSignIn() {
     this.google.getAccess();

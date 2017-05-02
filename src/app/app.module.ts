@@ -6,6 +6,9 @@ import {AppRoutingModule} from "./app.router";
 import {AppComponent}  from './app.component';
 
 import {AuthModule} from "auth/auth.module";
+import {StoragesModule} from "storages/common/storages.module";
+import {GoogleStorageModule} from "storages/google/google.module";
+import {SharedModule} from "shared/shared.module";
 
 import  * as COMMON_SERVICES from "./common/services/index";
 const commonServices = Object.keys(COMMON_SERVICES).map(key => COMMON_SERVICES[key]);
@@ -21,12 +24,15 @@ const commonComponents = Object.keys(COMMON_COMPONENTS).map(key => COMMON_COMPON
     BrowserModule,
     HttpModule,
     NgbModule.NgbModule.forRoot(),
+    SharedModule,
     AuthModule,
+    StoragesModule,
+    GoogleStorageModule,
     AppRoutingModule
   ],
   declarations : [
-    AppComponent,
-    commonComponents
+    commonComponents,
+    AppComponent
   ],
   providers : [
     commonServices,

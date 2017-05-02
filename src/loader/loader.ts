@@ -27,6 +27,8 @@
 
     'app/*' : 'app/*',
     'auth/*' : 'auth/*',
+    'shared/*' : 'shared/*',
+    'storages/*' : 'storages/*',
 
     'text' : 'loader/text.js',
     // 'rxjs' : 'vendor/rxjs',
@@ -39,6 +41,8 @@
   let packages = {
     'app' : {main : 'main.js', defaultExtension : 'js'},
     'auth' : {defaultExtension : 'js'},
+    'storages' : {defaultExtension : 'js'},
+    'shared' : {defaultExtension : 'js'},
     // 'rxjs' : {defaultExtension : 'js'},
   };
 
