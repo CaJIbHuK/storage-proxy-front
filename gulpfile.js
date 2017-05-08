@@ -47,7 +47,7 @@ gulp.task('vendor', ['clean'], function () {
     runtime: false,
     sourceMaps: true,
     sourceMapContents: true,
-    minify: false,
+    minify: true,
     mangle: false
   };
   let builder = new Builder('./');
@@ -116,6 +116,10 @@ gulp.task('vendor', ['clean'], function () {
     [`node_modules/@ng-bootstrap/ng-bootstrap/bundles/ng-bootstrap.js`, `vendor/@ng-bootstrap/`],
 
     [`node_modules/ng2-translate/bundles/ng2-translate.umd.js`, `vendor/ng2-translate/`],
+
+    [`node_modules/ng2-contextmenu/bundles/contextmenu.umd.js`, `vendor/ng2-contextmenu/`],
+
+    [`node_modules/file-saver/FileSaver.js`, `vendor/file-saver/`],
   ];
   let options = {cwd : dist, overwrite : true};
 

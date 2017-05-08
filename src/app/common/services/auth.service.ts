@@ -60,7 +60,7 @@ export class AuthService {
       .then(() => this.getUser());
   }
 
-  isAuthenticated() {
+  isAuthenticated() : Promise<boolean> {
     return this.getToken().then(token => !!token);
   }
 
@@ -81,7 +81,8 @@ export class AuthService {
       .then(() => this.http.post<{token : string}>('auth/signin', authInfo))
       .then(result => this.setToken(result.token))
       .then(() => this.init(true))
-      .then(() => ({result : this.isAuthenticated()}))
+      .then(() => this.isAuthenticated())
+      .then(isAuthed => ({result : isAuthed}))
       .catch(errors => {
         this.reset();
         return ({result : false, errors : errors});
@@ -93,7 +94,8 @@ export class AuthService {
       .then(() => this.http.post<{token : string}>('auth/signup', authInfo))
       .then(result => this.setToken(result.token))
       .then(() => this.init(true))
-      .then(() => ({result : this.isAuthenticated()}))
+      .then(() => this.isAuthenticated())
+      .then(isAuthed => ({result : isAuthed}))
       .catch(errors => {
         this.reset();
         return ({result : false, errors : errors});

@@ -27,6 +27,7 @@ export class StorageFile {
   description : string;
   parents : string[];
   encrypted : boolean;
+  locked : boolean = false;
   readonly id : string;
   readonly size : number;
   readonly root : boolean;
@@ -72,7 +73,8 @@ export interface IStorageService {
   getAccess() : Promise<void>;
   getFile(id : string) : Promise<IFilesList<StorageFile> | StorageFile>;
   getFileInfo(id : string) : Promise<StorageFile>;
-  downloadFile(id : string);
+  downloadFile(id : string) : Promise<Blob>;
+  removeFile(id : string) : Promise<void>;
   listFolder(folderId? : string) : Promise<StorageFile[]>;
   createFile(fileData : StorageFile) : Promise<StorageFile>;
   updateFile(file : StorageFile) : Promise<StorageFile>;

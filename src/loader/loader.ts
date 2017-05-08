@@ -24,6 +24,8 @@
     'zone.js/dist/*' : 'vendor/zone.js/*',
     'systemjs/dist/*' : 'vendor/systemjs/*',
     'core-js/client/*' : 'vendor/core-js/*',
+    'ng2-contextmenu' : 'vendor/ng2-contextmenu/contextmenu.umd.js',
+    'file-saver' : 'vendor/file-saver/FileSaver.js',
 
     'app/*' : 'app/*',
     'auth/*' : 'auth/*',

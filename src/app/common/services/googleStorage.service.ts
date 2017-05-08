@@ -1,7 +1,6 @@
 import {Injectable, Inject} from "@angular/core";
 import {HttpClient} from "./api.service";
 import {IStorageService, IFileFromApi, IFilesList, isFileList, StorageFile} from "app/common/models/index";
-import {win} from "@angular/platform-browser/src/browser/tools/browser";
 
 
 @Injectable()
@@ -30,16 +29,6 @@ export class GoogleStorageService implements IStorageService {
       .then(fileFromApi => new StorageFile(fileFromApi));
   }
 
-  //TODO FIX THIS
-  downloadFile(id : string) {
-    return this.http.getRaw<Response>(`storages/google/files/${id}/download`)
-      .then(data => {
-      var blob = new Blob([data._body], { type: 'application/pdf' });
-      var url= window.URL.createObjectURL(blob);
-      window.open(url);
-    });
-  }
-
   listFolder(folderId? : string) : Promise<StorageFile[]> {
     let id = folderId || "";
     return this.getFile(id)
@@ -63,6 +52,17 @@ export class GoogleStorageService implements IStorageService {
   saveFile(file : StorageFile) : Promise<StorageFile> {
     if (file.id) return this.updateFile(file);
     return this.createFile(file);
+  }
+
+  downloadFile(id : string) {
+    return this.http.getBlob<Response>(`storages/google/files/${id}/download`)
+      .then(response => {
+        return new Blob([response.blob()]);
+      });
+  }
+
+  removeFile(id : string) {
+    return this.http.delete(`storages/google/files/${id}`);
   }
 
 }

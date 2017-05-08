@@ -15,7 +15,7 @@ import css from "./filesPath.component.css!text";
   styles : [css]
 })
 export class FilesPathComponent {
-  @Output() onGoToFolder : EventEmitter = new EventEmitter();
+  @Output() onGoToFolder : EventEmitter<string> = new EventEmitter();
   @Input() folders : StorageFile[] = [];
   constructor() {}
 }

@@ -1,11 +1,11 @@
 import {Injectable, Inject} from '@angular/core';
-import {Http, Headers, Response, RequestOptions, RequestMethod} from '@angular/http';
+import {Http, Headers, Response, RequestOptions, RequestMethod, ResponseContentType} from '@angular/http';
 
 function promisify<T>(cb : any) : Promise<T> {
   return new Promise((res, rej) => {
     let value = null;
     cb.subscribe(
-      response => value = response,
+      response => {console.log(response);value = response},
       error => rej(error),
       () => res(value))
   });
@@ -104,6 +104,10 @@ export class HttpClient {
 
   getRaw<T>(url : string, data? : any) : Promise<T> {
     return this.makeRequest({method : RequestMethod.Get, url : url, data : data || null}, true);
+  }
+
+  getBlob<T>(url : string, data? : any) : Promise<T> {
+    return this.makeRequest({method : RequestMethod.Get, url : url, data : data || null, options : {responseType : ResponseContentType.Blob}}, true);
   }
 
   post<T>(url : string, data : any = {}) : Promise<T> {

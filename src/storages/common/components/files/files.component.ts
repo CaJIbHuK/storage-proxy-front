@@ -1,27 +1,31 @@
 import {Component, Input, Inject, OnInit} from "@angular/core";
 import {IStorageService, StorageFile} from "app/common/models/storage.models";
+import SaveAs from "file-saver";
 import {GoogleStorageService} from "app/common/services/index";
 import css from "./files.component.css!text";
 
 @Component({
   selector : 'files',
-  template : `
-    <div class="files">
-      <files-path *ngIf="currentFolder" [folders]="currentPathFolders" (onGoToFolder)="goToFolder($event)"></files-path>
-      <files-list *ngIf="currentFolder" 
-                  [folder]="currentFolder" 
-                  [previousFolder]="previousFolder" 
-                  [files]="files" 
-                  (onGoToFolder)="goToFolder($event)"
-                  (onDownloadFile)="downloadFile($event)"
-      >
-      </files-list>
-    </div>
+  template : `<div class="files">
+    <files-path *ngIf="currentFolder" [folders]="currentPathFolders" (onGoToFolder)="goToFolder($event)"></files-path>
+    <files-list *ngIf="currentFolder"
+                [folder]="currentFolder"
+                [previousFolder]="previousFolder"
+                [files]="files"
+                (onGoToFolder)="goToFolder($event)"
+                (onDownloadFile)="downloadFile($event)"
+                (onRemoveFile)="removeFile($event)"
+                class="{{loading && 'loading'}}"
+    >
+    </files-list>
+    <preloader *ngIf="loading"></preloader>
+  </div>
   `,
   styles : [css]
 })
 export class FilesComponent implements OnInit {
   @Input() storage : string;
+  loading : boolean = false;
   storageService : IStorageService = null;
   currentPathFolders : StorageFile[] = [];
   currentFolder : StorageFile = null;
@@ -60,15 +64,28 @@ export class FilesComponent implements OnInit {
   }
 
   goToFolder(id : string) {
+    this.loading = true;
     this.storageService.getFileInfo(id)
       .then(folder => {this.currentFolder = folder})
       .then(() => this.reloadFiles())
       .then(() => this.refreshPathFolders())
-      .then(() => this.reloadPreviousFolder());
+      .then(() => this.reloadPreviousFolder())
+      .then(() => {this.loading = false})
+      .catch(err => {
+        console.log(err);
+        this.loading = false;
+      })
   }
 
-  downloadFile(id : string) {
-    this.storageService.downloadFile(id);
+  downloadFile(file : StorageFile) {
+    this.storageService.downloadFile(file.id)
+      .then(data => SaveAs(data, file.name))
+      .then(() => file.locked = false);
+  }
+
+  removeFile(file : StorageFile) {
+    this.storageService.removeFile(file.id)
+      .then(() => this.goToFolder(this.currentFolder.id));
   }
 
 }

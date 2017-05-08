@@ -4,6 +4,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import NgbModule from "@ng-bootstrap/ng-bootstrap";
 import {AppRoutingModule} from "./app.router";
 import {AppComponent}  from './app.component';
+import {ContextmenuModule}  from "ng2-contextmenu";
 
 import {AuthModule} from "auth/auth.module";
 import {StoragesModule} from "storages/common/storages.module";
@@ -24,6 +25,7 @@ const commonComponents = Object.keys(COMMON_COMPONENTS).map(key => COMMON_COMPON
     BrowserModule,
     HttpModule,
     NgbModule.NgbModule.forRoot(),
+    ContextmenuModule,
     SharedModule,
     AuthModule,
     StoragesModule,
