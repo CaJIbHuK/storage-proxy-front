@@ -14,8 +14,11 @@ export class GoogleStorageService implements IStorageService {
     return this.http.get<{ link }>('storages/google/access')
       .then(({link}) => open(link, "google", "height=800,width=800,modal=yes,resizable,scrollbars=yes,status=1"))
       .then(openedWindow => {
-        setTimeout(() => {
-          if (openedWindow.closed) location.reload(true);
+        let timer = setInterval(() => {
+          if (openedWindow.closed) {
+            location.reload(true);
+            clearInterval(timer);
+          }
         }, 300)
       });
   }
