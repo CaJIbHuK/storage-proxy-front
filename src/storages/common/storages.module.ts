@@ -3,6 +3,7 @@ import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from '@angular/router';
 import {ContextmenuModule} from "ng2-contextmenu";
+import FileUploadModule from 'ng2-file-upload';
 import {SharedModule} from "shared/shared.module";
 import NgbModule from "@ng-bootstrap/ng-bootstrap";
 
@@ -14,11 +15,16 @@ const components = Object.keys(COMPONENTS).map(key => COMPONENTS[key]);
     CommonModule,
     FormsModule,
     RouterModule,
-    NgbModule.NgbModule,
+    NgbModule.NgbModalModule,
+    NgbModule.NgbCollapseModule,
+    FileUploadModule.FileUploadModule,
     ContextmenuModule,
     SharedModule
   ],
   providers : [
+  ],
+  entryComponents : [
+    COMPONENTS.FileInfoModalComponent
   ],
   declarations : [
     components

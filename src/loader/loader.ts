@@ -26,6 +26,7 @@
     'core-js/client/*' : 'vendor/core-js/*',
     'ng2-contextmenu' : 'vendor/ng2-contextmenu/contextmenu.umd.js',
     'file-saver' : 'vendor/file-saver/FileSaver.js',
+    'ng2-file-upload' : 'vendor/ng2-file-upload/ng2-file-upload.umd.min.js',
 
     'app/*' : 'app/*',
     'auth/*' : 'auth/*',

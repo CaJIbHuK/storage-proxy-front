@@ -1,5 +1,8 @@
-import {Component, Input, Inject, OnInit} from "@angular/core";
+import {Component, Input, Inject, OnInit, OnChanges, SimpleChanges} from "@angular/core";
+import {Router, ActivatedRoute} from "@angular/router";
 import {IStorageService, StorageFile} from "app/common/models/storage.models";
+import NgbModule, {NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import {FileInfoModalComponent} from "./fileInfo/fileInfo.component";
 import SaveAs from "file-saver";
 import {GoogleStorageService} from "app/common/services/index";
 import css from "./files.component.css!text";
@@ -9,15 +12,22 @@ import css from "./files.component.css!text";
   template : `<div class="files">
     <files-path *ngIf="currentFolder" [folders]="currentPathFolders" (onGoToFolder)="goToFolder($event)"></files-path>
     <files-list *ngIf="currentFolder"
+                class="{{loading && 'loading'}}"
                 [folder]="currentFolder"
                 [previousFolder]="previousFolder"
                 [files]="files"
                 (onGoToFolder)="goToFolder($event)"
                 (onDownloadFile)="downloadFile($event)"
                 (onRemoveFile)="removeFile($event)"
-                class="{{loading && 'loading'}}"
+                (onEditFile)="editFile($event)"
     >
-    </files-list>
+    </files-list> 
+    <div id="uploader-collapse" (click)="uploaderIsCollapsed = !uploaderIsCollapsed">
+        <i *ngIf="uploaderIsCollapsed" class="fa fa-plus" aria-hidden="true"></i>
+        <i *ngIf="!uploaderIsCollapsed" class="fa fa-minus" aria-hidden="true"></i>
+        Upload files
+    </div>
+    <files-uploader  [ngbCollapse]="uploaderIsCollapsed"></files-uploader>
     <preloader *ngIf="loading"></preloader>
   </div>
   `,
@@ -25,6 +35,8 @@ import css from "./files.component.css!text";
 })
 export class FilesComponent implements OnInit {
   @Input() storage : string;
+  @Input() currentFolderId : string = null;
+  uploaderIsCollapsed : boolean = true;
   loading : boolean = false;
   storageService : IStorageService = null;
   currentPathFolders : StorageFile[] = [];
@@ -32,12 +44,29 @@ export class FilesComponent implements OnInit {
   previousFolder : StorageFile = null;
   files : StorageFile[] = [];
 
-  constructor(@Inject(GoogleStorageService) private google : GoogleStorageService) {}
+  private isInited = false;
+
+  constructor(@Inject(GoogleStorageService) private google : GoogleStorageService,
+              @Inject(NgbModule.NgbModal) private modalService : NgbModule.NgbModal,
+              @Inject(Router) private router : Router,
+              @Inject(ActivatedRoute) private activatedRoute: ActivatedRoute,
+
+  ) {}
 
   ngOnInit() : void {
     if (this.storage === "google") this.storageService = this.google;
     else throw new Error("Invalid storage type");
-    this.goToFolder(this.storageService.ROOT_FOLDER);
+    this.reloadFolder(this.currentFolderId || this.storageService.ROOT_FOLDER);
+    this.isInited = true;
+  }
+  ngOnChanges(changes : SimpleChanges) {
+    if (!this.isInited) return;
+    let folderChanges = changes['currentFolderId'];
+    if (folderChanges) this.reloadFolder(folderChanges.currentValue || this.storageService.ROOT_FOLDER);
+  }
+
+  goToFolder(id : string) {
+    this.router.navigate([`../`,id], {relativeTo : this.activatedRoute});
   }
 
   reloadPreviousFolder() {
@@ -63,7 +92,8 @@ export class FilesComponent implements OnInit {
     }
   }
 
-  goToFolder(id : string) {
+  reloadFolder(id? : string) {
+    if (!id) id = this.currentFolderId;
     this.loading = true;
     this.storageService.getFileInfo(id)
       .then(folder => {this.currentFolder = folder})
@@ -75,6 +105,15 @@ export class FilesComponent implements OnInit {
         console.log(err);
         this.loading = false;
       })
+  }
+
+  editFile(file :StorageFile) {
+    const modalRef : NgbModalRef & {componentInstance : FileInfoModalComponent}  = this.modalService.open(FileInfoModalComponent);
+    modalRef.componentInstance.file = file;
+    modalRef.result
+    //TODO file.locked during update
+      .then(save => save && this.storageService.saveFile(file))
+      .then(updatedFile => updatedFile && this.reloadFolder());
   }
 
   downloadFile(file : StorageFile) {

@@ -5,7 +5,7 @@ import css from "./google.component.css!text";
   selector : 'google',
   template : `
     <div class="google-storage">
-      <storage-side-navigation></storage-side-navigation>
+      <storage-side-navigation [storage]="'google'"></storage-side-navigation>
       <router-outlet></router-outlet>
     </div>
   `,

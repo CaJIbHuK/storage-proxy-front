@@ -5,7 +5,7 @@ function promisify<T>(cb : any) : Promise<T> {
   return new Promise((res, rej) => {
     let value = null;
     cb.subscribe(
-      response => {console.log(response);value = response},
+      response => value = response,
       error => rej(error),
       () => res(value))
   });

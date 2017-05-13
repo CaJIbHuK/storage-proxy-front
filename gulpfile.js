@@ -120,6 +120,8 @@ gulp.task('vendor', ['clean'], function () {
     [`node_modules/ng2-contextmenu/bundles/contextmenu.umd.js`, `vendor/ng2-contextmenu/`],
 
     [`node_modules/file-saver/FileSaver.js`, `vendor/file-saver/`],
+
+    [`node_modules/ng2-file-upload/bundles/ng2-file-upload.umd.min.js`, `vendor/ng2-file-upload/`],
   ];
   let options = {cwd : dist, overwrite : true};
 

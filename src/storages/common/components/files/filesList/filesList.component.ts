@@ -7,7 +7,15 @@ import css from "./filesList.component.css!text";
   selector : 'files-list',
   template : `<div class="files-list">
     <div class="row table-header">
-        <div class="col-md-1 file-field file-field-logo"></div>
+        <div class="col-md-1 btn-group create-menu">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Create
+            </button>
+            <div class="dropdown-menu">
+                <button class="dropdown-item btn btn-link" (click)="createFolder()">New folder</button>
+                <button class="dropdown-item btn btn-link">Upload files</button>
+            </div>
+        </div>
         <div class="col-md-5 file-field file-field-name">Filename</div>
         <div class="col-md-2 file-field file-field-size">Size</div>
         <div class="col-md-2 file-field file-field-updated">Updated</div>
@@ -36,7 +44,7 @@ import css from "./filesList.component.css!text";
       <contextmenu #contextmenu>
           <div class="dropdown show">
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <button class="dropdown-item" (click)="showInfo(contextmenu.get('item'))">Show Info</button>
+                  <button class="dropdown-item" (click)="editFile(contextmenu.get('item'))">Show Info</button>
                   <button class="dropdown-item {{contextmenu.get('item.locked') && 'disabled'}}" (click)="downloadFile(contextmenu.get('item'))">Download</button>
                   <div class="dropdown-divider"></div>
                   <button class="dropdown-item {{contextmenu.get('item.locked') && 'disabled'}}" (click)="removeFile(contextmenu.get('item'))">Remove</button>
@@ -51,16 +59,20 @@ export class FilesListComponent {
   @Output() onGoToFolder : EventEmitter<string> = new EventEmitter();
   @Output() onDownloadFile : EventEmitter<StorageFile> = new EventEmitter();
   @Output() onRemoveFile : EventEmitter<StorageFile> = new EventEmitter();
-
-  selectedFiles : StorageFile[] = [];
-  multipleChoice : boolean = false;
+  @Output() onEditFile : EventEmitter<StorageFile> = new EventEmitter();
 
   @Input() folder : StorageFile;
   @Input() previousFolder : StorageFile = null;
   @Input() files : StorageFile[] = [];
 
-  constructor() {
+  selectedFiles : StorageFile[] = [];
+  multipleChoice : boolean = false;
 
+  constructor() {
+    this.setupKeyEvents();
+  }
+
+  setupKeyEvents() {
     window.onkeyup = (e) => {
       //ctrl for multiselect
       if (e.keyCode === 17) this.multipleChoice = false
@@ -106,12 +118,16 @@ export class FilesListComponent {
 
   dbClickFile(file : StorageFile) {
     if (file.folder) this.onGoToFolder.emit(file.id);
-    else this.showInfo(file);
+    else this.editFile(file);
     this.reset();
   }
 
-  showInfo(file : StorageFile) {
-    return alert(JSON.stringify(file));
+  editFile(file : StorageFile) {
+    this.onEditFile.emit(file);
+  }
+
+  createFolder() {
+    this.onEditFile.emit(new StorageFile({folder : true, parents : [this.folder.id]}));
   }
 
   downloadFile(file : StorageFile) {

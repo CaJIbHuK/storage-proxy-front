@@ -5,9 +5,13 @@ import {GoogleAccessGuard} from "./guards/index";
 import {GoogleComponent, GoogleFilesComponent} from "./components/index";
 
 const googleStorageRoutes : Routes = [
-  {path : 'google', component : GoogleComponent, canActivate : [AuthGuard, GoogleAccessGuard],
+  {path : 'google', component : GoogleComponent, canActivate : [GoogleAccessGuard],
     children : [
-      {path : '', component : GoogleFilesComponent},
+      {path : '', redirectTo: 'drive', pathMatch: 'full'},
+      {path : 'drive', children : [
+        {path : '', redirectTo : 'root', pathMatch : 'full'},
+        {path : ':id', component : GoogleFilesComponent},
+      ]},
     ]
   },
 ];

@@ -1,17 +1,17 @@
 
 export interface IFileFromApi {
-  id : string;
-  name : string;
-  root : boolean;
-  description : string;
-  encrypted : boolean;
-  size : number;
-  folder : boolean;
-  createdAt : Date;
-  updatedAt : Date;
-  storage : string;
-  parents : string[];
-  mimeType : string;
+  id? : string;
+  name? : string;
+  root? : boolean;
+  description? : string;
+  encrypted? : boolean;
+  size? : number;
+  folder? : boolean;
+  createdAt? : Date;
+  updatedAt? : Date;
+  storage? : string;
+  parents? : string[];
+  mimeType? : string;
 }
 
 export interface IFilesList<T> {
@@ -37,7 +37,7 @@ export class StorageFile {
   readonly storage : string;
   readonly mimeType : string;
 
-  constructor(fileFromApi : IFileFromApi) {
+  constructor(fileFromApi : IFileFromApi = {}) {
     this.id = fileFromApi.id;
     this.name = fileFromApi.name;
     this.description = fileFromApi.description;
