@@ -2,6 +2,7 @@ import {Component, Input, Inject, OnInit, OnChanges, SimpleChanges} from "@angul
 import {Router, ActivatedRoute} from "@angular/router";
 import {IStorageService, StorageFile} from "app/common/models/storage.models";
 import NgbModule, {NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import FileUploader from "ng2-file-upload";
 import {FileInfoModalComponent} from "./fileInfo/fileInfo.component";
 import SaveAs from "file-saver";
 import {GoogleStorageService} from "app/common/services/index";
@@ -18,8 +19,9 @@ import css from "./files.component.css!text";
                 [files]="files"
                 (onGoToFolder)="goToFolder($event)"
                 (onDownloadFile)="downloadFile($event)"
-                (onRemoveFile)="removeFile($event)"
+                (onRemoveFiles)="removeFiles($event)"
                 (onEditFile)="editFile($event)"
+                (onUploadFiles)="uploaderIsCollapsed = false"
     >
     </files-list> 
     <div id="uploader-collapse" (click)="uploaderIsCollapsed = !uploaderIsCollapsed">
@@ -27,7 +29,7 @@ import css from "./files.component.css!text";
         <i *ngIf="!uploaderIsCollapsed" class="fa fa-minus" aria-hidden="true"></i>
         Upload files
     </div>
-    <files-uploader  [ngbCollapse]="uploaderIsCollapsed"></files-uploader>
+    <files-uploader [storageService]="storageService" [folderId]="currentFolderId" (onUploadFinish)="reloadFolder()" [ngbCollapse]="uploaderIsCollapsed"></files-uploader>
     <preloader *ngIf="loading"></preloader>
   </div>
   `,
@@ -122,9 +124,9 @@ export class FilesComponent implements OnInit {
       .then(() => file.locked = false);
   }
 
-  removeFile(file : StorageFile) {
-    this.storageService.removeFile(file.id)
-      .then(() => this.goToFolder(this.currentFolder.id));
+  removeFiles(files : StorageFile[]) {
+    Promise.all(files.map(file => this.storageService.removeFile(file.id)))
+      .then(() => this.reloadFolder());
   }
 
 }

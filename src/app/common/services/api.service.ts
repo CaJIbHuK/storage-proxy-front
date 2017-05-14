@@ -1,5 +1,8 @@
 import {Injectable, Inject} from '@angular/core';
-import {Http, Headers, Response, RequestOptions, RequestMethod, ResponseContentType} from '@angular/http';
+import {
+  Http, Headers, Response, RequestOptions, RequestMethod, ResponseContentType,
+  RequestOptionsArgs
+} from '@angular/http';
 
 function promisify<T>(cb : any) : Promise<T> {
   return new Promise((res, rej) => {
@@ -38,10 +41,7 @@ export class HttpClient {
   }
 
   private fillHeaders() {
-    this.headers = new Headers();
-    for (let header of Object.keys(this.DEFAULT_HEADERS)) {
-      this.headers.append(header, this.DEFAULT_HEADERS[header])
-    }
+    this.headers = new Headers(this.DEFAULT_HEADERS);
   }
 
   setAuthHeader(token : string) {
@@ -75,7 +75,6 @@ export class HttpClient {
   }
 
   private handleError(errorResponse : Response | any) {
-    // In a real world app, you might use a remote logging infrastructure
     let error = null;
     try {
       error = errorResponse.json();
@@ -86,40 +85,44 @@ export class HttpClient {
     throw error;
   }
 
-  private makeRequest(params : RequestParams, raw : boolean = false) : Promise<any> {
-    let defaultOpts = this.getRequestOptions();
-    let opts : RequestOptions = Object.assign({}, defaultOpts, {method : params.method});
-    if (params.data) opts.body = params.data;
-    if (params.options) opts = Object.assign({}, opts, params.options);
+  private mergeRequestOptions(original : RequestOptions, toMerge : RequestOptions) {
+    let newHeaders = toMerge.headers;
+    if (newHeaders) {
+      original.headers = new Headers(original.headers);
+      Object.keys(newHeaders.toJSON()).forEach(headerName => original.headers.set(headerName, newHeaders[headerName]));
+      delete toMerge.headers;
+    }
+    return original.merge(toMerge);
+  }
 
+  private makeRequest(params : RequestParams, raw : boolean = false) : Promise<any> {
+    let opts = this.getRequestOptions();
+    if (params.options) opts = this.mergeRequestOptions(opts, params.options);
+    if (params.data) opts.body = params.data;
+    opts.method = params.method;
     return promisify<Response>(this.http.request(`${this.apiUrl}/${params.url}`, opts))
       .then(response => raw ? response : this.extractData(response))
       .catch(error => this.handleError(error));
   }
 
-
-  get<T>(url : string, data? : any) : Promise<T> {
-    return this.makeRequest({method : RequestMethod.Get, url : url, data : data || null});
+  getRaw<T>(url : string, data? : any, options? : RequestOptions) : Promise<T> {
+    return this.makeRequest({method : RequestMethod.Get, url : url, data : data || null, options : options}, true);
   }
 
-  getRaw<T>(url : string, data? : any) : Promise<T> {
-    return this.makeRequest({method : RequestMethod.Get, url : url, data : data || null}, true);
+  get<T>(url : string, data? : any, options? : RequestOptions) : Promise<T> {
+    return this.makeRequest({method : RequestMethod.Get, url : url, data : data || null, options : options});
   }
 
-  getBlob<T>(url : string, data? : any) : Promise<T> {
-    return this.makeRequest({method : RequestMethod.Get, url : url, data : data || null, options : {responseType : ResponseContentType.Blob}}, true);
+  post<T>(url : string, data : any = {}, options? : RequestOptions) : Promise<T> {
+    return this.makeRequest({method : RequestMethod.Post, url : url, data : data, options : options});
   }
 
-  post<T>(url : string, data : any = {}) : Promise<T> {
-    return this.makeRequest({method : RequestMethod.Post, url : url, data : data});
+  put<T>(url : string, data : any = {}, options? : RequestOptions) : Promise<T> {
+    return this.makeRequest({method : RequestMethod.Put, url : url, data : data, options : options});
   }
 
-  put<T>(url : string, data : any = {}) : Promise<T> {
-    return this.makeRequest({method : RequestMethod.Put, url : url, data : data});
-  }
-
-  delete(url : string) {
-    return this.makeRequest({method : RequestMethod.Delete, url : url});
+  delete(url : string, options? : RequestOptions) {
+    return this.makeRequest({method : RequestMethod.Delete, url : url, options : options});
   }
 
 

@@ -77,6 +77,8 @@ export interface IStorageService {
   removeFile(id : string) : Promise<void>;
   listFolder(folderId? : string) : Promise<StorageFile[]>;
   createFile(fileData : StorageFile) : Promise<StorageFile>;
+  uploadFile(id : string, media : any) : Promise<StorageFile>;
+  createAndUploadFile(fileData : StorageFile, media : any) : Promise<StorageFile>;
   updateFile(file : StorageFile) : Promise<StorageFile>;
   saveFile(file : StorageFile) : Promise<StorageFile>;
 }
