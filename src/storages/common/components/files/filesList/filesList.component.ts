@@ -9,7 +9,7 @@ import {createUrlResolverWithoutPackagePrefix} from "@angular/compiler";
   template : `<div class="files-list">
     <div class="row table-header">
         <div class="col-md-1 btn-group create-menu">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Create
             </button>
             <div class="dropdown-menu">
